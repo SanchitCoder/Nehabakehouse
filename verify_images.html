@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image-Product Verification Tool</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .product-card {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .product-name {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+            font-size: 16px;
+        }
+        .product-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            border: 2px solid #ddd;
+        }
+        .image-filename {
+            font-size: 11px;
+            color: #666;
+            word-break: break-all;
+            margin-top: 5px;
+        }
+        .status {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+        .status.correct {
+            background: #d4edda;
+            color: #155724;
+        }
+        .status.incorrect {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .instructions {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🍰 Image-Product Verification Tool</h1>
+        
+        <div class="instructions">
+            <strong>Instructions:</strong> Review each product image below. If an image doesn't match the product name, 
+            note the image filename and the correct product it should be assigned to. You can then update the mapping in 
+            <code>src/lib/productsData.ts</code>
+        </div>
+
+        <div class="product-grid" id="productGrid">
+            <!-- Products will be loaded here -->
+        </div>
+    </div>
+
+    <script>
+        // Product data from productsData.ts
+        const products = [
+            { name: 'Small Chocolate', image: '/WhatsApp Image 2025-11-03 at 20.53.48_8153f9b8.jpg' },
+            { name: 'Chocolate Bar', image: '/WhatsApp Image 2025-11-03 at 20.53.48_9cd4b6f9.jpg' },
+            { name: 'Nut Chocolate Bar', image: '/WhatsApp Image 2025-11-03 at 20.53.48_a796992e.jpg' },
+            { name: 'Vanilla Muffin', image: '/WhatsApp Image 2025-11-03 at 20.53.48_dd4432cd.jpg' },
+            { name: 'Chocolate Muffin', image: '/WhatsApp Image 2025-11-03 at 20.53.49_03ff2c52.jpg' },
+            { name: 'Vanilla Cupcake', image: '/WhatsApp Image 2025-11-03 at 20.53.49_a7f9dc66.jpg' },
+            { name: 'Chocolate Cupcake', image: '/WhatsApp Image 2025-11-03 at 20.53.50_230e7cca.jpg' },
+            { name: 'Vanilla Glasscake', image: '/WhatsApp Image 2025-11-03 at 20.53.50_9491f119.jpg' },
+            { name: 'Strawberry Glasscake', image: '/WhatsApp Image 2025-11-03 at 20.53.50_e13db27c.jpg' },
+            { name: 'Pineapple Glasscake', image: '/WhatsApp Image 2025-11-03 at 21.02.04_0501a8d4.jpg' },
+            { name: 'Chocolate Glasscake', image: '/WhatsApp Image 2025-11-03 at 21.02.04_ff086662.jpg' },
+            { name: 'Truffle Glasscake', image: '/truffles.jpg' },
+            { name: 'Vanilla Jarcake', image: '/WhatsApp Image 2025-11-03 at 21.02.04_ffbb8eba.jpg' },
+            { name: 'Strawberry Jarcake', image: '/WhatsApp Image 2025-11-03 at 21.02.05_33882962.jpg' },
+            { name: 'Pineapple Jarcake', image: '/WhatsApp Image 2025-11-03 at 21.02.05_3d79ac1c.jpg' },
+            { name: 'Chocolate Jarcake', image: '/WhatsApp Image 2025-11-03 at 21.02.05_9e91ec43.jpg' },
+            { name: 'Truffle Jarcake', image: '/truffles.jpg' },
+            { name: 'Blueberry Cheesecake', image: '/WhatsApp Image 2025-11-03 at 21.02.06_6c6750d0.jpg' },
+            { name: 'Chocolate Cheesecake', image: '/WhatsApp Image 2025-11-03 at 21.02.06_a76f60d9.jpg' },
+            { name: 'Brownie (40gm)', image: '/WhatsApp Image 2025-11-03 at 21.03.29_62e6b2ae.jpg' },
+            { name: 'Brownie (500gm)', image: '/WhatsApp Image 2025-11-03 at 21.03.29_9aacd4f8.jpg' },
+            { name: 'Vanilla Cake (500gm)', image: '/WhatsApp Image 2025-11-03 at 21.03.29_c3546026.jpg' },
+            { name: 'Vanilla Cake (1kg)', image: '/WhatsApp Image 2025-11-03 at 21.03.30_d3b40026.jpg' },
+            { name: 'Vanilla Cake (Bento)', image: '/WhatsApp Image 2025-11-03 at 21.03.30_e3fc96a5.jpg' },
+            { name: 'Strawberry Cake (500gm)', image: '/WhatsApp Image 2025-11-03 at 21.04.49_4d5210d6.jpg' },
+            { name: 'Strawberry Cake (1kg)', image: '/WhatsApp Image 2025-11-03 at 21.04.49_d423ee14.jpg' },
+            { name: 'Strawberry Cake (Bento)', image: '/WhatsApp Image 2025-11-03 at 21.04.50_b4baf054.jpg' },
+            { name: 'Chocolate Cake (500gm)', image: '/WhatsApp Image 2025-11-03 at 21.04.50_ff5d6984.jpg' },
+            { name: 'Chocolate Cake (1kg)', image: '/WhatsApp Image 2025-11-03 at 21.04.51_870d790d.jpg' },
+            { name: 'Chocolate Cake (Bento)', image: '/Gemini_Generated_Image_nf4kwunf4kwunf4k (4).png' },
+            { name: 'Pineapple Cake (500gm)', image: '/WhatsApp Image 2025-11-03 at 21.04.51_c6ca024f.jpg' },
+            { name: 'Pineapple Cake (1kg)', image: '/WhatsApp Image 2025-11-03 at 21.04.50_ff5d6984.jpg' },
+            { name: 'Pineapple Cake (Bento)', image: '/WhatsApp Image 2025-11-03 at 21.03.30_e3fc96a5.jpg' },
+            { name: 'Truffle Cake (500gm)', image: '/truffles.jpg' },
+            { name: 'Truffle Cake (1kg)', image: '/truffles.jpg' },
+            { name: 'Truffle Cake (Bento)', image: '/truffles.jpg' },
+            { name: 'Chocolate Loaf', image: '/Gemini_Generated_Image_nf4kwunf4kwunf4k.png' },
+            { name: 'Vanilla Loaf', image: '/Gemini_Generated_Image_nf4kwunf4kwunf4k (1).png' },
+            { name: 'Tooti Frooti Loaf', image: '/Gemini_Generated_Image_nf4kwunf4kwunf4k (2).png' },
+            { name: 'Nankhatai (500gms)', image: '/Gemini_Generated_Image_nf4kwunf4kwunf4k (3).png' },
+        ];
+
+        function renderProducts() {
+            const grid = document.getElementById('productGrid');
+            grid.innerHTML = products.map(product => {
+                const filename = product.image.split('/').pop();
+                return `
+                    <div class="product-card">
+                        <div class="product-name">${product.name}</div>
+                        <img src="${product.image}" alt="${product.name}" class="product-image" 
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'200\' height=\'200\'%3E%3Crect fill=\'%23ddd\' width=\'200\' height=\'200\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23999\'%3EImage not found%3C/text%3E%3C/svg%3E'">
+                        <div class="image-filename">${filename}</div>
+                        <div class="status incorrect">⚠ Needs Verification</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        renderProducts();
+    </script>
+</body>
+</html>
+
+
+

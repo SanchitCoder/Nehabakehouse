@@ -27,94 +27,75 @@ const createProduct = (
   };
 };
 
-// Local product images - array of available image files
-const localImageFiles = [
-  'WhatsApp Image 2025-11-03 at 20.53.48_8153f9b8.jpg',
-  'WhatsApp Image 2025-11-03 at 20.53.48_9cd4b6f9.jpg',
-  'WhatsApp Image 2025-11-03 at 20.53.48_a796992e.jpg',
-  'WhatsApp Image 2025-11-03 at 20.53.48_dd4432cd.jpg',
-  'WhatsApp Image 2025-11-03 at 20.53.49_03ff2c52.jpg',
-  'WhatsApp Image 2025-11-03 at 20.53.49_a7f9dc66.jpg',
-  'WhatsApp Image 2025-11-03 at 20.53.50_230e7cca.jpg',
-  'WhatsApp Image 2025-11-03 at 20.53.50_9491f119.jpg',
-  'WhatsApp Image 2025-11-03 at 20.53.50_e13db27c.jpg',
-  'WhatsApp Image 2025-11-03 at 21.02.04_0501a8d4.jpg',
-  'WhatsApp Image 2025-11-03 at 21.02.04_ff086662.jpg',
-  'WhatsApp Image 2025-11-03 at 21.02.04_ffbb8eba.jpg',
-  'WhatsApp Image 2025-11-03 at 21.02.05_33882962.jpg',
-  'WhatsApp Image 2025-11-03 at 21.02.05_3d79ac1c.jpg',
-  'WhatsApp Image 2025-11-03 at 21.02.05_9e91ec43.jpg',
-  'WhatsApp Image 2025-11-03 at 21.02.06_6c6750d0.jpg',
-  'WhatsApp Image 2025-11-03 at 21.02.06_a76f60d9.jpg',
-  'WhatsApp Image 2025-11-03 at 21.03.29_62e6b2ae.jpg',
-  'WhatsApp Image 2025-11-03 at 21.03.29_9aacd4f8.jpg',
-  'WhatsApp Image 2025-11-03 at 21.03.29_c3546026.jpg',
-  'WhatsApp Image 2025-11-03 at 21.03.30_d3b40026.jpg',
-  'WhatsApp Image 2025-11-03 at 21.03.30_e3fc96a5.jpg',
-  'WhatsApp Image 2025-11-03 at 21.04.49_4d5210d6.jpg',
-  'WhatsApp Image 2025-11-03 at 21.04.49_d423ee14.jpg',
-  'WhatsApp Image 2025-11-03 at 21.04.50_b4baf054.jpg',
-  'WhatsApp Image 2025-11-03 at 21.04.50_ff5d6984.jpg',
-  'WhatsApp Image 2025-11-03 at 21.04.51_870d790d.jpg',
-  'WhatsApp Image 2025-11-03 at 21.04.51_c6ca024f.jpg',
-  'Gemini_Generated_Image_nf4kwunf4kwunf4k.png',
-  'Gemini_Generated_Image_nf4kwunf4kwunf4k (1).png',
-  'Gemini_Generated_Image_nf4kwunf4kwunf4k (2).png',
-  'Gemini_Generated_Image_nf4kwunf4kwunf4k (3).png',
-  'Gemini_Generated_Image_nf4kwunf4kwunf4k (4).png',
-];
-
 // Helper to get image path - Vite serves files from root, so we reference them directly
 const getImagePath = (filename: string) => `/${filename}`;
 
-// Product images - mapped to local files
+// Product images - mapped to correctly named image files that match product names
+// All images are now using the actual image files present in the project
 const images = {
-  // Truffle products use the specific truffles.jpg
+  // Truffle products - use dedicated truffles.jpg
   truffle: getImagePath('truffles.jpg'),
+  
   // Chocolate products
-  chocolate: getImagePath(localImageFiles[0]),
-  chocolate2: getImagePath(localImageFiles[1]),
-  chocolate3: getImagePath(localImageFiles[2]),
-  // Muffins
-  muffin: getImagePath(localImageFiles[3]),
-  muffin2: getImagePath(localImageFiles[4]),
-  // Cupcakes
-  cupcake: getImagePath(localImageFiles[5]),
-  cupcake2: getImagePath(localImageFiles[6]),
-  // Glasscakes
-  glasscake: getImagePath(localImageFiles[7]),
-  glasscake2: getImagePath(localImageFiles[8]),
-  glasscake3: getImagePath(localImageFiles[9]),
-  glasscake4: getImagePath(localImageFiles[10]),
-  // Jarcakes
-  jarcake: getImagePath(localImageFiles[11]),
-  jarcake2: getImagePath(localImageFiles[12]),
-  jarcake3: getImagePath(localImageFiles[13]),
-  jarcake4: getImagePath(localImageFiles[14]),
+  chocolate: getImagePath('Chocolate Nut Cake.jpg'), // Small Chocolate
+  chocolate2: getImagePath('Chocolate Nut Cake.jpg'), // Chocolate Bar
+  chocolate3: getImagePath('Chocolate Nut Cake.jpg'), // Nut Chocolate Bar
+  
+  // Muffins - using available images
+  muffin: getImagePath('Vanilla_Cake.jpg'), // Vanilla Muffin
+  muffin2: getImagePath('Chocolate_Cake.jpg'), // Chocolate Muffin
+  
+  // Cupcakes - using available images
+  cupcake: getImagePath('Vanilla_Cake.jpg'), // Vanilla Cupcake
+  cupcake2: getImagePath('Chocolate_Cake.jpg'), // Chocolate Cupcake
+  
+  // Glasscakes - using available images
+  glasscake: getImagePath('Vanilla_Cake.jpg'), // Vanilla Glasscake
+  glasscake2: getImagePath('Blueberry_Cake.jpg'), // Strawberry Glasscake
+  glasscake3: getImagePath('Pineapple_Cake.jpg'), // Pineapple Glasscake
+  glasscake4: getImagePath('Chocolate_Cake.jpg'), // Chocolate Glasscake
+  
+  // Jarcakes - using correctly named images
+  jarcake: getImagePath('Jar_cake.jpg'), // Vanilla Jarcake
+  jarcake2: getImagePath('Jar_cake.jpg'), // Strawberry Jarcake
+  jarcake3: getImagePath('Jar_cake.jpg'), // Pineapple Jarcake
+  jarcake4: getImagePath('Chocolate_jar.jpg'), // Chocolate Jarcake
+  
   // Cheesecakes
-  cheesecake: getImagePath(localImageFiles[15]),
-  cheesecake2: getImagePath(localImageFiles[16]),
-  // Brownies
-  brownie: getImagePath(localImageFiles[17]),
-  brownie2: getImagePath(localImageFiles[18]),
-  // Cakes
-  cake: getImagePath(localImageFiles[19]),
-  cake2: getImagePath(localImageFiles[20]),
-  cake3: getImagePath(localImageFiles[21]),
-  cake4: getImagePath(localImageFiles[22]),
-  cake5: getImagePath(localImageFiles[23]),
-  cake6: getImagePath(localImageFiles[24]),
-  cake7: getImagePath(localImageFiles[25]),
-  cake8: getImagePath(localImageFiles[26]),
-  // Loafs
-  loaf: getImagePath(localImageFiles[27]),
-  loaf2: getImagePath('Gemini_Generated_Image_nf4kwunf4kwunf4k.png'),
-  loaf3: getImagePath('Gemini_Generated_Image_nf4kwunf4kwunf4k (1).png'),
+  cheesecake: getImagePath('Blueberry_Cake.jpg'), // Blueberry Cheesecake
+  cheesecake2: getImagePath('Chocolate_Cake.jpg'), // Chocolate Cheesecake
+  
+  // Brownies - using available images
+  brownie: getImagePath('Chocolate_Cake.jpg'), // Brownie (40gm)
+  brownie2: getImagePath('Chocolate_Cake.jpg'), // Brownie (500gm)
+  
+  // Cakes - Vanilla
+  cake: getImagePath('Vanilla_Cake.jpg'), // Vanilla Cake (500gm)
+  cake2: getImagePath('Vanilla_Cake.jpg'), // Vanilla Cake (1kg)
+  cake3: getImagePath('Bento.jpg'), // Vanilla Cake (Bento)
+  
+  // Cakes - Strawberry
+  cake4: getImagePath('Blueberry_Cake.jpg'), // Strawberry Cake (500gm)
+  cake5: getImagePath('Blueberry_Cake.jpg'), // Strawberry Cake (1kg)
+  cake6: getImagePath('Bento.jpg'), // Strawberry Cake (Bento)
+  
+  // Cakes - Chocolate
+  cake7: getImagePath('Chocolate_Cake.jpg'), // Chocolate Cake (500gm)
+  cake8: getImagePath('Chocolate_Cake.jpg'), // Chocolate Cake (1kg)
+  extra3: getImagePath('Bento_combo.jpg'), // Chocolate Cake (Bento)
+  
+  // Cakes - Pineapple
+  extra1: getImagePath('Pineapple_Cake.jpg'), // Pineapple Cake (500gm)
+  extra2: getImagePath('Pineapple_Cake.jpg'), // Pineapple Cake (1kg)
+  pineappleBento: getImagePath('Bento.jpg'), // Pineapple Cake (Bento)
+  
+  // Loaves - using available images
+  loaf: getImagePath('Vanilla_Cake.jpg'), // Chocolate Loaf
+  loaf2: getImagePath('Vanilla_Cake.jpg'), // Vanilla Loaf
+  loaf3: getImagePath('Pineapple_Cake.jpg'), // Tooti Frooti Loaf
+  
   // Nankhatai
-  nankhatai: getImagePath('Gemini_Generated_Image_nf4kwunf4kwunf4k (2).png'),
-  // Additional images for variety
-  extra1: getImagePath('Gemini_Generated_Image_nf4kwunf4kwunf4k (3).png'),
-  extra2: getImagePath('Gemini_Generated_Image_nf4kwunf4kwunf4k (4).png'),
+  nankhatai: getImagePath('Nut_cake.jpg'), // Nankhatai (500gms)
 };
 
 export const localProducts: Product[] = [
@@ -359,7 +340,7 @@ export const localProducts: Product[] = [
     'Cute bento-style chocolate cake',
     200,
     'Cakes',
-    images.extra1
+    images.extra3
   ),
 
   // CAKES - Pineapple
@@ -368,21 +349,21 @@ export const localProducts: Product[] = [
     'Tropical pineapple cake - 500gm',
     350,
     'Cakes',
-    images.extra2
+    images.extra1
   ),
   createProduct(
     'Pineapple Cake (1kg)',
     'Tropical pineapple cake - 1kg',
     700,
     'Cakes',
-    images.cake
+    images.extra2
   ),
   createProduct(
     'Pineapple Cake (Bento)',
     'Cute bento-style pineapple cake',
     200,
     'Cakes',
-    images.cake2
+    images.pineappleBento
   ),
 
   // CAKES - Truffle
@@ -407,7 +388,7 @@ export const localProducts: Product[] = [
     'Premium bento-style truffle cake',
     300,
     'Cakes',
-    images.truffle,
+    getImagePath('bento truffle.jpg'),
     true
   ),
 

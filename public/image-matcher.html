@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image-Product Matcher</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .controls {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .product-section {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .product-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eee;
+        }
+        .product-name {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+        }
+        .product-category {
+            display: inline-block;
+            padding: 4px 12px;
+            background: #e3f2fd;
+            color: #1976d2;
+            border-radius: 12px;
+            font-size: 12px;
+            margin-left: 10px;
+        }
+        .image-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+        }
+        .image-option {
+            position: relative;
+            cursor: pointer;
+            border: 3px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+        .image-option:hover {
+            border-color: #4CAF50;
+            transform: scale(1.05);
+        }
+        .image-option.selected {
+            border-color: #4CAF50;
+            background: #e8f5e9;
+        }
+        .image-option img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            display: block;
+        }
+        .image-filename {
+            padding: 8px;
+            font-size: 10px;
+            color: #666;
+            word-break: break-all;
+            background: white;
+        }
+        .current-image {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            border-left: 4px solid #2196F3;
+        }
+        .current-image img {
+            max-width: 300px;
+            max-height: 300px;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+        .save-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #4CAF50;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            z-index: 1000;
+        }
+        .save-btn:hover {
+            background: #45a049;
+        }
+        .stats {
+            display: flex;
+            gap: 20px;
+            margin-top: 10px;
+        }
+        .stat {
+            padding: 10px 15px;
+            background: #f0f0f0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🍰 Image-Product Matcher</h1>
+        <p class="subtitle">Click on the correct image for each product. Then click "Generate Mapping" to update the code.</p>
+        
+        <div class="controls">
+            <div class="stats">
+                <div class="stat">Total Products: <strong id="totalProducts">0</strong></div>
+                <div class="stat">Matched: <strong id="matchedCount">0</strong></div>
+                <div class="stat">Unmatched: <strong id="unmatchedCount">0</strong></div>
+            </div>
+        </div>
+
+        <div id="productsContainer"></div>
+    </div>
+
+    <button class="save-btn" onclick="generateMapping()">Generate Mapping Code</button>
+
+    <script>
+        // All available images
+        const allImages = [
+            'WhatsApp Image 2025-11-03 at 20.53.48_8153f9b8.jpg',
+            'WhatsApp Image 2025-11-03 at 20.53.48_9cd4b6f9.jpg',
+            'WhatsApp Image 2025-11-03 at 20.53.48_a796992e.jpg',
+            'WhatsApp Image 2025-11-03 at 20.53.48_dd4432cd.jpg',
+            'WhatsApp Image 2025-11-03 at 20.53.49_03ff2c52.jpg',
+            'WhatsApp Image 2025-11-03 at 20.53.49_a7f9dc66.jpg',
+            'WhatsApp Image 2025-11-03 at 20.53.50_230e7cca.jpg',
+            'WhatsApp Image 2025-11-03 at 20.53.50_9491f119.jpg',
+            'WhatsApp Image 2025-11-03 at 20.53.50_e13db27c.jpg',
+            'WhatsApp Image 2025-11-03 at 21.02.04_0501a8d4.jpg',
+            'WhatsApp Image 2025-11-03 at 21.02.04_ff086662.jpg',
+            'WhatsApp Image 2025-11-03 at 21.02.04_ffbb8eba.jpg',
+            'WhatsApp Image 2025-11-03 at 21.02.05_33882962.jpg',
+            'WhatsApp Image 2025-11-03 at 21.02.05_3d79ac1c.jpg',
+            'WhatsApp Image 2025-11-03 at 21.02.05_9e91ec43.jpg',
+            'WhatsApp Image 2025-11-03 at 21.02.06_6c6750d0.jpg',
+            'WhatsApp Image 2025-11-03 at 21.02.06_a76f60d9.jpg',
+            'WhatsApp Image 2025-11-03 at 21.03.29_62e6b2ae.jpg',
+            'WhatsApp Image 2025-11-03 at 21.03.29_9aacd4f8.jpg',
+            'WhatsApp Image 2025-11-03 at 21.03.29_c3546026.jpg',
+            'WhatsApp Image 2025-11-03 at 21.03.30_d3b40026.jpg',
+            'WhatsApp Image 2025-11-03 at 21.03.30_e3fc96a5.jpg',
+            'WhatsApp Image 2025-11-03 at 21.04.49_4d5210d6.jpg',
+            'WhatsApp Image 2025-11-03 at 21.04.49_d423ee14.jpg',
+            'WhatsApp Image 2025-11-03 at 21.04.50_b4baf054.jpg',
+            'WhatsApp Image 2025-11-03 at 21.04.50_ff5d6984.jpg',
+            'WhatsApp Image 2025-11-03 at 21.04.51_870d790d.jpg',
+            'WhatsApp Image 2025-11-03 at 21.04.51_c6ca024f.jpg',
+            'Gemini_Generated_Image_nf4kwunf4kwunf4k.png',
+            'Gemini_Generated_Image_nf4kwunf4kwunf4k (1).png',
+            'Gemini_Generated_Image_nf4kwunf4kwunf4k (2).png',
+            'Gemini_Generated_Image_nf4kwunf4kwunf4k (3).png',
+            'Gemini_Generated_Image_nf4kwunf4kwunf4k (4).png',
+            'truffles.jpg'
+        ];
+
+        // Products from the codebase
+        const products = [
+            { name: 'Small Chocolate', category: 'Cookies' },
+            { name: 'Chocolate Bar', category: 'Cookies' },
+            { name: 'Nut Chocolate Bar', category: 'Cookies' },
+            { name: 'Vanilla Muffin', category: 'Pastries' },
+            { name: 'Chocolate Muffin', category: 'Pastries' },
+            { name: 'Vanilla Cupcake', category: 'Cakes' },
+            { name: 'Chocolate Cupcake', category: 'Cakes' },
+            { name: 'Vanilla Glasscake', category: 'Cakes' },
+            { name: 'Strawberry Glasscake', category: 'Cakes' },
+            { name: 'Pineapple Glasscake', category: 'Cakes' },
+            { name: 'Chocolate Glasscake', category: 'Cakes' },
+            { name: 'Truffle Glasscake', category: 'Cakes' },
+            { name: 'Vanilla Jarcake', category: 'Cakes' },
+            { name: 'Strawberry Jarcake', category: 'Cakes' },
+            { name: 'Pineapple Jarcake', category: 'Cakes' },
+            { name: 'Chocolate Jarcake', category: 'Cakes' },
+            { name: 'Truffle Jarcake', category: 'Cakes' },
+            { name: 'Blueberry Cheesecake', category: 'Cakes' },
+            { name: 'Chocolate Cheesecake', category: 'Cakes' },
+            { name: 'Brownie (40gm)', category: 'Cookies' },
+            { name: 'Brownie (500gm)', category: 'Cookies' },
+            { name: 'Vanilla Cake (500gm)', category: 'Cakes' },
+            { name: 'Vanilla Cake (1kg)', category: 'Cakes' },
+            { name: 'Vanilla Cake (Bento)', category: 'Cakes' },
+            { name: 'Strawberry Cake (500gm)', category: 'Cakes' },
+            { name: 'Strawberry Cake (1kg)', category: 'Cakes' },
+            { name: 'Strawberry Cake (Bento)', category: 'Cakes' },
+            { name: 'Chocolate Cake (500gm)', category: 'Cakes' },
+            { name: 'Chocolate Cake (1kg)', category: 'Cakes' },
+            { name: 'Chocolate Cake (Bento)', category: 'Cakes' },
+            { name: 'Pineapple Cake (500gm)', category: 'Cakes' },
+            { name: 'Pineapple Cake (1kg)', category: 'Cakes' },
+            { name: 'Pineapple Cake (Bento)', category: 'Cakes' },
+            { name: 'Truffle Cake (500gm)', category: 'Cakes' },
+            { name: 'Truffle Cake (1kg)', category: 'Cakes' },
+            { name: 'Truffle Cake (Bento)', category: 'Cakes' },
+            { name: 'Chocolate Loaf', category: 'Breads' },
+            { name: 'Vanilla Loaf', category: 'Breads' },
+            { name: 'Tooti Frooti Loaf', category: 'Breads' },
+            { name: 'Nankhatai (500gms)', category: 'Cookies' },
+        ];
+
+        const mappings = {};
+
+        function renderProducts() {
+            const container = document.getElementById('productsContainer');
+            container.innerHTML = products.map((product, index) => {
+                const selectedImage = mappings[product.name] || '';
+                return `
+                    <div class="product-section" data-product="${product.name}">
+                        <div class="product-header">
+                            <div>
+                                <span class="product-name">${product.name}</span>
+                                <span class="product-category">${product.category}</span>
+                            </div>
+                            ${selectedImage ? `<div style="color: #4CAF50; font-weight: bold;">✓ Selected</div>` : ''}
+                        </div>
+                        ${selectedImage ? `
+                            <div class="current-image">
+                                <strong>Current Selection:</strong>
+                                <img src="/${selectedImage}" alt="${product.name}" onerror="this.style.display='none'">
+                                <div style="margin-top: 10px; font-size: 12px; color: #666;">${selectedImage}</div>
+                            </div>
+                        ` : ''}
+                        <div class="image-selector">
+                            ${allImages.map(img => `
+                                <div class="image-option ${selectedImage === img ? 'selected' : ''}" 
+                                     onclick="selectImage('${product.name}', '${img}')">
+                                    <img src="/${img}" alt="${img}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'150\' height=\'150\'%3E%3Crect fill=\'%23ddd\' width=\'150\' height=\'150\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23999\'%3ENot found%3C/text%3E%3C/svg%3E'">
+                                    <div class="image-filename">${img.length > 30 ? img.substring(0, 30) + '...' : img}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            updateStats();
+        }
+
+        function selectImage(productName, imageFilename) {
+            mappings[productName] = imageFilename;
+            renderProducts();
+        }
+
+        function updateStats() {
+            document.getElementById('totalProducts').textContent = products.length;
+            const matched = Object.keys(mappings).length;
+            document.getElementById('matchedCount').textContent = matched;
+            document.getElementById('unmatchedCount').textContent = products.length - matched;
+        }
+
+        function generateMapping() {
+            const unmatched = products.filter(p => !mappings[p.name]);
+            if (unmatched.length > 0) {
+                if (!confirm(`${unmatched.length} products are not matched. Generate mapping anyway?`)) {
+                    return;
+                }
+            }
+
+            // Generate the mapping code
+            let code = `// Image-Product Mapping (Generated from image-matcher.html)\n`;
+            code += `// Update this in src/lib/productsData.ts\n\n`;
+            code += `const productImageMapping = {\n`;
+            
+            products.forEach(product => {
+                const image = mappings[product.name] || 'NOT_SELECTED';
+                code += `  '${product.name}': '${image}',\n`;
+            });
+            
+            code += `};\n\n`;
+            code += `// Copy the above mapping and update productsData.ts accordingly\n`;
+
+            // Create download
+            const blob = new Blob([code], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'image_mapping.txt';
+            a.click();
+            URL.revokeObjectURL(url);
+
+            // Also show in console
+            console.log('Generated Mapping:');
+            console.log(JSON.stringify(mappings, null, 2));
+            alert('Mapping generated! Check the downloaded file and console for the mapping. I will update productsData.ts with these mappings.');
+        }
+
+        // Load saved mappings from localStorage
+        const saved = localStorage.getItem('imageMappings');
+        if (saved) {
+            Object.assign(mappings, JSON.parse(saved));
+        }
+
+        // Save mappings on change
+        const originalSelectImage = selectImage;
+        selectImage = function(...args) {
+            originalSelectImage(...args);
+            localStorage.setItem('imageMappings', JSON.stringify(mappings));
+        };
+
+        renderProducts();
+    </script>
+</body>
+</html>
+
+
+
