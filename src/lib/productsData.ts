@@ -27,8 +27,8 @@ const createProduct = (
   };
 };
 
-// Helper to get image path - Vite serves files from root, so we reference them directly
-const getImagePath = (filename: string) => `/${filename}`;
+// Helper to get image path - Vite serves files from public folder, so we reference them from public root
+const getImagePath = (filename: string) => `/images/${filename}`;
 
 // Product images - mapped to correctly named image files that match product names
 // All images are now using the actual image files present in the project

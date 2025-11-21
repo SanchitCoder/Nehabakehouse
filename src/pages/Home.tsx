@@ -22,7 +22,7 @@ export default function Home() {
         <div
           className="absolute inset-0 opacity-10"
           style={{
-            backgroundImage: 'url(/truffles.jpg)',
+            backgroundImage: 'url(/images/truffles.jpg)',
             backgroundSize: 'cover',
             backgroundPosition: 'center',
           }}
