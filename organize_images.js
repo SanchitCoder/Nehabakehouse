@@ -154,3 +154,4 @@ for (const [product, image] of Object.entries(mapping)) {
 
 
 
+
